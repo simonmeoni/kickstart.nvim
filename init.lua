@@ -31,7 +31,7 @@ require('lazy').setup {
   require 'plugins/harpoon',
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',
-  require 'plugins/neogit',
+  require 'plugins/lazygit',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
