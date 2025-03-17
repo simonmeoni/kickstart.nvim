@@ -169,7 +169,7 @@ return {
     local servers = {
       pyright = {},
       bashls = {
-        filetypes = { 'sh', 'make' }, -- Ensure Makefiles are included
+        filetypes = { 'sh' }, -- Ensure Makefiles are included
         cmd = { 'bash-language-server', 'start' },
       },
       lua_ls = {

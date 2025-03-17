@@ -22,6 +22,11 @@ vim.opt.showmode = false
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
+vim.opt.textwidth = 100
+
+-- enable persistent undo
+vim.opt.undodir = '~/.nvim/undodir'
+vim.opt.undofile = true
 
 -- Enable break indent
 vim.opt.breakindent = true

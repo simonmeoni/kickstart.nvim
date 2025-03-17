@@ -32,7 +32,8 @@ require('lazy').setup {
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',
   require 'plugins/lazygit',
-  require 'plugins.hop',
+  require 'plugins/hop',
+  require 'plugins/undotree',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
