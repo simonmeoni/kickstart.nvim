@@ -2,8 +2,6 @@ return {
   'mbbill/undotree',
   config = function()
     vim.cmd [[
-      let g:undotree_WindowLayout = 3
-      let g:undotree_DiffpanelHeight = 10
       if has("persistent_undo")
         let target_path = expand('~/.undodir')
         if !isdirectory(target_path)
@@ -12,6 +10,8 @@ return {
         let &undodir = target_path
         set undofile
       endif
+      let g:undotree_WindowLayout = 4
+      let g:undotree_SetFocusWhenToggle = 1
     ]]
     vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle, {})
   end,
