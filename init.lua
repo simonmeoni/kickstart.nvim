@@ -26,7 +26,6 @@ require('lazy').setup {
   require 'plugins/todo-comments',
   require 'plugins/centerpad',
   require 'plugins/mini',
-  require 'plugins/autosave',
   require 'plugins/oil',
   require 'plugins/harpoon',
   require 'plugins/yankstack',
