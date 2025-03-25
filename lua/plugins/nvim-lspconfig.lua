@@ -167,7 +167,16 @@ return {
     --  - settings (table): Override the default settings passed when initializing the server.
     --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
     local servers = {
-      pyright = {},
+      pyright = {
+        settings = {
+          python = {
+            analysis = {
+              autoImportCompletions = true,
+              stubPath = './typings', -- Ensure Pyright looks for generated stubs
+            },
+          },
+        },
+      },
       bashls = {
         filetypes = { 'sh' }, -- Ensure Makefiles are included
         cmd = { 'bash-language-server', 'start' },
