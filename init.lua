@@ -33,6 +33,8 @@ require('lazy').setup {
   require 'plugins/lazygit',
   require 'plugins/hop',
   require 'plugins/undotree',
+  require 'plugins/nvim-dap',
+  require 'plugins/refactor',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
