@@ -34,10 +34,15 @@ require('lazy').setup {
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',
   require 'plugins/lazygit',
+  require 'plugins/cmd-line',
   require 'plugins/hop',
   require 'plugins/undotree',
   require 'plugins/nvim-dap',
   require 'plugins/refactor',
+  require 'plugins/fortune',
+  require 'plugins/dashboard-nvim',
+  require 'plugins/molten',
+  require 'plugins/autopairs',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

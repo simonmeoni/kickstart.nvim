@@ -1,7 +1,21 @@
 return {
   'lukas-reineke/indent-blankline.nvim',
   main = 'ibl',
-  ---@module "ibl"
   ---@type ibl.config
-  opts = {},
+  opts = {
+    exclude = {
+      filetypes = {
+        'help',
+        'startify',
+        'aerial',
+        'alpha',
+        'dashboard',
+        'packer',
+        'neogitstatus',
+        'NvimTree',
+        'neo-tree',
+        'Trouble',
+      },
+    },
+  },
 }
