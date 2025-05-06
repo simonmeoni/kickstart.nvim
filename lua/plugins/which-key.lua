@@ -53,6 +53,7 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>a', group = 'h[A]rpoon', mode = { 'n', 'v' } },
       { '<leader>n', group = '[N]eogit', mode = { 'n', 'v' } },
       { '<leader>u', group = '[U]ndotree', mode = { 'n', 'v' } },
+      { '<leader>S', group = '[S]pectre', mode = { 'n', 'x' } },
     },
   },
 }
