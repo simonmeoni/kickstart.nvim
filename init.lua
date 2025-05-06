@@ -4,11 +4,13 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
+vim.o.termguicolors = true
 
 require 'options'
 require 'keymaps'
 require 'lazy-bootstrap'
 require 'autocommands'
+require 'health'
 
 -- [[ Configure and install plugins ]]
 
@@ -23,7 +25,7 @@ require('lazy').setup {
   require 'plugins/venv-selector',
   require 'plugins/conform',
   require 'plugins/nvim-cmp',
-  require 'plugins/oxocarbon',
+  require 'plugins/catpuccin',
   require 'plugins/todo-comments',
   require 'plugins/centerpad',
   require 'plugins/mini',
