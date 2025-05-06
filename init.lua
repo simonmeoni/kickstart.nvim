@@ -43,6 +43,7 @@ require('lazy').setup {
   require 'plugins/dashboard-nvim',
   require 'plugins/molten',
   require 'plugins/autopairs',
+  require 'plugins/spectre',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
