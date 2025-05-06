@@ -34,6 +34,7 @@ require('lazy').setup {
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',
   require 'plugins/lazygit',
+  require 'plugins/lint',
   require 'plugins/cmd-line',
   require 'plugins/hop',
   require 'plugins/undotree',
