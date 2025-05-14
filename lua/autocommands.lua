@@ -14,9 +14,9 @@ vim.api.nvim_create_autocmd('textyankpost', {
 
 local lunette = {
   rsync_autocmd_id = nil,
-  source_dir = '/Users/Simon/Code/open-nlp/lib/synth-kg',
+  source_dir = '/Users/Simon/Code/open-nlp/lib/self-dp-instruct',
   dest_host = 'ufw96he@jean-zay.idris.fr',
-  dest_dir = '/lustre/fswork/projects/rech/lch/ufw96he/lib/synth-kg',
+  dest_dir = '/lustre/fswork/projects/rech/lch/ufw96he/lib/self-dp-instruct',
 }
 
 function lunette.toggle_rsync_autocmd()

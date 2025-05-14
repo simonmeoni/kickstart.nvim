@@ -15,6 +15,7 @@ return { -- Collection of various small independent plugins/modules
     -- - sd'   - [S]urround [D]elete [']quotes
     -- - sr)'  - [S]urround [R]eplace [)] [']
     require('mini.surround').setup()
+    require('mini.splitjoin').setup()
     require('mini.jump').setup()
     require('mini.move').setup()
 
