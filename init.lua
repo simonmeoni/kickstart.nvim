@@ -31,6 +31,7 @@ require('lazy').setup {
   require 'plugins/centerpad',
   require 'plugins/mini',
   require 'plugins/oil',
+  require 'plugins/virt-column',
   require 'plugins/harpoon',
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',

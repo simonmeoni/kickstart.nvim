@@ -30,6 +30,8 @@ vim.opt.undofile = true
 
 -- Enable break indent
 vim.opt.breakindent = true
+vim.opt.wrap = false
+vim.opt.colorcolumn = '100'
 
 -- Save undo history
 vim.opt.undofile = true
@@ -55,7 +57,13 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = {
+  space = '·',
+  tab = '» ',
+  trail = '·',
+  nbsp = '␣',
+  eol = '↲',
+}
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'

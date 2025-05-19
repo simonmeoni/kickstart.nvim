@@ -1,7 +1,6 @@
 return {
   'lukas-reineke/indent-blankline.nvim',
   main = 'ibl',
-  ---@type ibl.config
   opts = {
     exclude = {
       filetypes = {
@@ -12,10 +11,21 @@ return {
         'dashboard',
         'packer',
         'neogitstatus',
-        'NvimTree',
+        'nvimtree',
         'neo-tree',
-        'Trouble',
+        'trouble',
       },
+    },
+    indent = {
+      highlight = highlight,
+      char = '',
+    },
+    whitespace = {
+      highlight = { 'cursorcolumn', 'whitespace' },
+      remove_blankline_trail = false,
+    },
+    scope = {
+      enabled = false,
     },
   },
 }
