@@ -42,7 +42,7 @@ return {
           elements = {
             { id = 'repl', size = 1.0 },
           },
-          size = 60,
+          size = 0.4,
           position = 'bottom',
         },
       },

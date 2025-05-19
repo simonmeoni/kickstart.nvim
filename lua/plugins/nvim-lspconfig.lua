@@ -174,6 +174,9 @@ return {
               autoImportCompletions = true,
               stubPath = './typings', -- Ensure Pyright looks for generated stubs
             },
+            formatting = {
+              provider = 'black',
+            },
           },
         },
       },
@@ -216,6 +219,7 @@ return {
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
       'black',
+      'flake8',
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
