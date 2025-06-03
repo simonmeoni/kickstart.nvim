@@ -23,7 +23,7 @@ require('lazy').setup {
   require 'plugins/lazy-dev',
   require 'plugins/nvim-lspconfig',
   require 'plugins/indent-blanklines',
-  require 'plugins/venv-selector',
+  -- require 'plugins/venv-selector',
   require 'plugins/conform',
   require 'plugins/nvim-cmp',
   require 'plugins/catpuccin',
@@ -48,6 +48,7 @@ require('lazy').setup {
   require 'plugins/molten',
   require 'plugins/autopairs',
   require 'plugins/spectre',
+  require 'plugins/copilot',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
