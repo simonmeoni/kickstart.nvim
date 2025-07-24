@@ -172,6 +172,9 @@ return {
           python = {
             analysis = {
               autoImportCompletions = true,
+              typeCheckingMode = 'basic', -- "off", "basic", or "strict"
+              autoSearchPaths = true,
+              useLibraryCodeForTypes = true,
               stubPath = './typings', -- Ensure Pyright looks for generated stubs
             },
             formatting = {

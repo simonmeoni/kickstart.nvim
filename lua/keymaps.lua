@@ -36,3 +36,6 @@ vim.keymap.set('n', '<Tab>', ':bnext<CR>')
 
 -- Map Shift+Tab to switch to the previous buffer
 vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>')
+vim.keymap.set('n', 'q', '<Nop>')
+vim.keymap.set('n', 'q:', '<Nop>')
+vim.keymap.set('n', 'q/', '<Nop>')

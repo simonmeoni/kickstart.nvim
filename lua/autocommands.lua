@@ -12,30 +12,54 @@ vim.api.nvim_create_autocmd('textyankpost', {
   end,
 })
 
+vim.api.nvim_create_user_command('WQ', function()
+  if vim.bo.modified then
+    vim.cmd 'wq'
+  else
+    vim.cmd 'q'
+  end
+end, {})
+
 local lunette = {
   rsync_autocmd_id = nil,
-  source_dir = '/Users/Simon/Code/open-nlp/lib/self-dp-instruct',
+  mappings = {
+    ['/Users/Simon/Code/open-nlp/lib/synth-kg'] = '/lustre/fswork/projects/rech/lch/ufw96he/lib/synth-kg',
+    ['/Users/Simon/Code/thesis-metrics'] = '/lustre/fswork/projects/rech/lch/ufw96he/thesis-metrics',
+  },
   dest_host = 'ufw96he@jean-zay.idris.fr',
-  dest_dir = '/lustre/fswork/projects/rech/lch/ufw96he/lib/self-dp-instruct',
 }
+
+function lunette.find_dest_dir(cwd)
+  for local_dir, remote_dir in pairs(lunette.mappings) do
+    if cwd:find(local_dir, 1, true) == 1 then
+      local rel = cwd:sub(#local_dir + 2) -- skip trailing slash
+      return local_dir, remote_dir .. '/' .. rel
+    end
+  end
+  return nil, nil
+end
 
 function lunette.toggle_rsync_autocmd()
   local cwd = vim.fn.getcwd()
-  if cwd == lunette.source_dir then
-    print 'Lunette autocommand is toggled !'
+  local matched_source, base_dest = lunette.find_dest_dir(cwd)
+
+  if matched_source then
+    print('Lunette autocommand is toggled for: ' .. matched_source)
     lunette.rsync_autocmd_id = vim.api.nvim_create_autocmd('BufWritePost', {
       pattern = '*',
       callback = function(ctx)
         local abs = ctx.file
-        local rel = vim.fn.fnamemodify(abs, ':.')
-        local dst = string.format('%s/%s', lunette.dest_dir, rel)
-        -- création du dossier distant si besoin
+        local rel = vim.fn.fnamemodify(abs, ':.' .. matched_source)
+        local dst = base_dest .. '/' .. rel
+
+        -- Création du dossier distant si besoin
         vim.fn.system {
           'ssh',
           lunette.dest_host,
           'mkdir -p ' .. vim.fn.fnamemodify(dst, ':h'),
         }
-        -- envoi du fichier
+
+        -- Envoi du fichier
         vim.fn.system {
           'scp',
           '-q',
@@ -45,11 +69,12 @@ function lunette.toggle_rsync_autocmd()
       end,
     })
   else
-    print 'Lunette autocommand can only be toggled in the source directory'
+    print 'Lunette autocommand can only be toggled in a registered source directory'
   end
 end
 
 vim.api.nvim_create_user_command('LunetteToggleRsync', function()
   lunette.toggle_rsync_autocmd()
 end, { desc = 'Toggle lunette rsync autocommand' })
+
 lunette.toggle_rsync_autocmd()

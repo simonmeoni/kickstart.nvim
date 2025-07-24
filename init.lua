@@ -1,5 +1,6 @@
 -- Set <space> as the leader key
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+--  NOTE: Must happen before plugins are loaded
+--  (otherwise wrong leader will be used)
 
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
@@ -23,22 +24,19 @@ require('lazy').setup {
   require 'plugins/lazy-dev',
   require 'plugins/nvim-lspconfig',
   require 'plugins/indent-blanklines',
-  -- require 'plugins/venv-selector',
   require 'plugins/conform',
   require 'plugins/nvim-cmp',
   require 'plugins/catpuccin',
   require 'plugins/todo-comments',
-  require 'plugins/centerpad',
   require 'plugins/mini',
+  require 'plugins/smartcolumn',
   require 'plugins/oil',
-  require 'plugins/virt-column',
   require 'plugins/harpoon',
   require 'plugins/yankstack',
   require 'plugins/nvim-webdev-icons',
   require 'plugins/lazygit',
   require 'plugins/lint',
-  require 'plugins/cmd-line',
-  require 'plugins/undotree',
+  require 'plugins.telescope-undo',
   require 'plugins/nvim-dap',
   require 'plugins/refactor',
   require 'plugins/fortune',
@@ -49,6 +47,8 @@ require('lazy').setup {
   require 'plugins/autopairs',
   require 'plugins/spectre',
   require 'plugins/copilot',
+  require 'plugins/nvim-tmux-navigation',
+  require 'plugins/diffview',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

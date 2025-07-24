@@ -111,6 +111,7 @@ return {
     vim.keymap.set('n', '<Leader>co', dap.step_over, { desc = 'DAP: Step Over' })
     vim.keymap.set('n', '<Leader>ci', dap.step_into, { desc = 'DAP: Step Into' })
     vim.keymap.set('n', '<Leader>cu', dap.step_out, { desc = 'DAP: Step Out' })
+    vim.keymap.set('n', '<Leader>cq', dap.terminate, { desc = 'DAP: Stop' })
     vim.keymap.set('n', '<Leader>cb', dap.toggle_breakpoint, { desc = 'DAP: Toggle Breakpoint' })
     vim.keymap.set('n', '<Leader>cB', function()
       dap.set_breakpoint(vim.fn.input 'Condition: ')

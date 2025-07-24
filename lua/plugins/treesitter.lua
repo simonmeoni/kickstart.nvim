@@ -15,6 +15,38 @@ return { -- Highlight, edit, and navigate code
       additional_vim_regex_highlighting = { 'ruby' },
     },
     indent = { enable = true, disable = { 'ruby' } },
+    {
+      'nvim-treesitter/nvim-treesitter',
+      build = ':TSUpdate',
+      dependencies = {
+        'nvim-treesitter/nvim-treesitter-refactor',
+      },
+      config = function()
+        require('nvim-treesitter.configs').setup {
+          highlight = { enable = true },
+          indent = { enable = true },
+          refactor = {
+            highlight_definitions = { enable = true },
+            smart_rename = {
+              enable = true,
+              keymaps = {
+                smart_rename = 'grr', -- tu peux changer
+              },
+            },
+            navigation = {
+              enable = true,
+              keymaps = {
+                goto_definition_lsp_fallback = 'gnd',
+                list_definitions = 'gnD',
+                list_definitions_toc = 'gO',
+                goto_next_usage = '<a-*>',
+                goto_previous_usage = '<a-#>',
+              },
+            },
+          },
+        }
+      end,
+    },
   },
   -- There are additional nvim-treesitter modules that you can use to interact
   -- with nvim-treesitter. You should go explore a few and see what interests you:
