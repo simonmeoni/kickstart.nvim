@@ -10,7 +10,6 @@ return {
         cmp = true,
         gitsigns = true,
         treesitter = true,
-        telescope = true,
         nvimtree = true,
         mason = true,
         lsp_trouble = true,

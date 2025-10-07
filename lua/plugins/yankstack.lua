@@ -2,6 +2,7 @@ return {
   'gbprod/yanky.nvim',
   dependencies = {
     { 'kkharji/sqlite.lua' },
+    { 'folke/snacks.nvim' },
   },
   opts = {
     ring = { storage = 'sqlite' },
@@ -10,9 +11,10 @@ return {
     {
       '<leader>p',
       function()
-        require('telescope').extensions.yank_history.yank_history {}
+        Snacks.picker.yanky()
       end,
-      desc = 'O[P]en Yank History',
+      mode = { 'n', 'x' },
+      desc = 'Open Yank History',
     },
     { 'y', '<Plug>(YankyYank)', mode = { 'n', 'x' }, desc = 'Yank text' },
     { 'p', '<Plug>(YankyPutAfter)', mode = { 'n', 'x' }, desc = 'Put yanked text after cursor' },

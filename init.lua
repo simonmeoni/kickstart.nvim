@@ -19,10 +19,11 @@ require('lazy').setup {
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   require 'plugins/which-key',
   require 'plugins/git-signs',
-  require 'plugins/telescope',
+  require 'plugins/snack',
   require 'plugins/hardtime',
   require 'plugins/lazy-dev',
   require 'plugins/nvim-lspconfig',
+  require 'plugins/trouble',
   require 'plugins/indent-blanklines',
   require 'plugins/conform',
   require 'plugins/nvim-cmp',
@@ -36,7 +37,6 @@ require('lazy').setup {
   require 'plugins/nvim-webdev-icons',
   require 'plugins/lazygit',
   require 'plugins/lint',
-  require 'plugins.telescope-undo',
   require 'plugins/nvim-dap',
   require 'plugins/refactor',
   require 'plugins/fortune',
@@ -49,6 +49,10 @@ require('lazy').setup {
   require 'plugins/copilot',
   require 'plugins/nvim-tmux-navigation',
   require 'plugins/diffview',
+  require 'plugins/vimtex',
+  require 'plugins/neoscroll',
+  require 'plugins/eldritch',
+  require 'plugins/github-monochrome',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

@@ -34,9 +34,10 @@ return { -- Autocompletion
     'hrsh7th/cmp-nvim-lsp',
     'hrsh7th/cmp-path',
     'hrsh7th/cmp-nvim-lsp-signature-help',
-    'zbirenbaum/copilot-cmp',
+    'hrsh7th/cmp-buffer',
     'onsails/lspkind.nvim',
     'kdheepak/cmp-latex-symbols',
+    'micangl/cmp-vimtex',
   },
   config = function()
     -- See `:help cmp`
@@ -44,15 +45,11 @@ return { -- Autocompletion
     local luasnip = require 'luasnip'
     luasnip.config.setup {}
     local lspkind = require 'lspkind'
-    require('copilot_cmp').setup()
 
     cmp.setup {
       formatting = {
         format = lspkind.cmp_format {
           mode = 'symbol', -- show only symbol annotations
-          symbol_map = {
-            Copilot = '', -- use custom icon for copilot
-          },
           maxwidth = {
             -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
             -- can also be a function to dynamically calculate max width such as
@@ -118,21 +115,24 @@ return { -- Autocompletion
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
       sources = {
+        { name = 'buffer', max_item_count = 15 },
         {
           name = 'lazydev',
           -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
           group_index = 0,
+          max_item_count = 15,
         },
-        { name = 'copilot' },
-        { name = 'nvim_lsp' },
-        { name = 'luasnip' },
-        { name = 'path' },
-        { name = 'nvim_lsp_signature_help' },
+        { name = 'nvim_lsp', max_item_count = 15 },
+        { name = 'luasnip', max_item_count = 15 },
+        { name = 'path', max_item_count = 15 },
+        { name = 'vimtex', max_item_count = 15 },
+        -- { name = 'nvim_lsp_signature_help' },
         {
           name = 'latex_symbols',
           option = {
             strategy = 0, -- mixed
           },
+          max_item_count = 15,
         },
       },
     }

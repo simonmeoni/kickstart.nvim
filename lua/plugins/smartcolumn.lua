@@ -15,6 +15,8 @@ return {
       'lazy',
       'lspinfo',
       'dashboard',
+      'tex',
+      'bib',
     },
   },
 }

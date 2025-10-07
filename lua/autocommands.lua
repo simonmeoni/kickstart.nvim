@@ -12,18 +12,25 @@ vim.api.nvim_create_autocmd('textyankpost', {
   end,
 })
 
-vim.api.nvim_create_user_command('WQ', function()
-  if vim.bo.modified then
-    vim.cmd 'wq'
-  else
-    vim.cmd 'q'
-  end
-end, {})
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { 'tex', 'bib' },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true
+    vim.opt_local.breakindent = true
+    vim.opt_local.showbreak = '↪ '
+    vim.opt_local.textwidth = 0
+    vim.opt_local.wrapmargin = 0
+    vim.opt_local.colorcolumn = ''
+    vim.opt_local.formatoptions:remove { 't', 'a' }
+  end,
+})
 
 local lunette = {
   rsync_autocmd_id = nil,
   mappings = {
     ['/Users/Simon/Code/open-nlp/lib/synth-kg'] = '/lustre/fswork/projects/rech/lch/ufw96he/lib/synth-kg',
+    ['/Users/Simon/Code/open-nlp/lib/conflicts'] = '/lustre/fswork/projects/rech/lch/ufw96he/lib/conflicts',
     ['/Users/Simon/Code/thesis-metrics'] = '/lustre/fswork/projects/rech/lch/ufw96he/thesis-metrics',
   },
   dest_host = 'ufw96he@jean-zay.idris.fr',

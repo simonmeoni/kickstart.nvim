@@ -1,76 +1,73 @@
-return { -- Git diff and merge tool
+return {
+  -- Diff/merge UI
   'sindrets/diffview.nvim',
   dependencies = {
+    'folke/snacks.nvim', -- le picker
     'nvim-lua/plenary.nvim',
-    'nvim-telescope/telescope.nvim',
   },
   config = function()
     require('diffview').setup()
   end,
   keys = {
-    -- Git diff views
+    -- Vues directes Diffview (inchangé)
     { '<leader>gd', '<cmd>DiffviewOpen<cr>', desc = '[G]it [D]iff working tree vs HEAD' },
     { '<leader>gh', '<cmd>DiffviewFileHistory<cr>', desc = '[G]it [H]istory repo commits' },
     { '<leader>gH', '<cmd>DiffviewFileHistory %<cr>', desc = '[G]it [H]istory current file' },
 
-    -- Telescope commit picker that pipes to diffview
     {
       '<leader>gc',
       function()
-        require('telescope.builtin').git_commits {
-          attach_mappings = function(_, map)
-            local actions = require 'telescope.actions'
-            local state = require 'telescope.actions.state'
-            map('i', '<CR>', function(prompt_bufnr)
-              local entry = state.get_selected_entry()
-              actions.close(prompt_bufnr)
-              vim.cmd('DiffviewOpen ' .. entry.value)
-            end)
-            return true
+        Snacks.picker.git_log {
+          confirm = function(picker, item)
+            -- Champs possibles selon la source (soyons robustes)
+            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
+            picker:close()
+            if hash then
+              vim.cmd('DiffviewOpen ' .. hash)
+            else
+              vim.notify('Impossible de récupérer le hash du commit', vim.log.levels.WARN)
+            end
           end,
         }
       end,
       desc = '[G]it [C]ommits → Diffview',
     },
 
+    -- Commits du fichier courant → Diffview (equiv. git_bcommits)
     {
       '<leader>gC',
       function()
-        require('telescope.builtin').git_bcommits {
-          attach_mappings = function(_, map)
-            local actions = require 'telescope.actions'
-            local state = require 'telescope.actions.state'
-            map('i', '<CR>', function(prompt_bufnr)
-              local entry = state.get_selected_entry()
-              actions.close(prompt_bufnr)
-              vim.cmd('DiffviewOpen ' .. entry.value .. '^!' .. ' -- ' .. vim.fn.expand '%')
-            end)
-            return true
+        local file = vim.fn.expand '%'
+        Snacks.picker.git_log_file {
+          confirm = function(picker, item)
+            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
+            picker:close()
+            if hash and file ~= '' then
+              -- diff du commit (range ^!) restreint au fichier courant
+              vim.cmd('DiffviewOpen ' .. hash .. '^! -- ' .. vim.fn.fnameescape(file))
+            end
           end,
         }
       end,
       desc = '[G]it file [C]ommits → Diffview',
     },
-    vim.keymap.set('n', '<leader>gvc', function()
-      require('telescope.builtin').git_bcommits {
-        attach_mappings = function(_, map)
-          local actions = require 'telescope.actions'
-          local state = require 'telescope.actions.state'
 
-          map('i', '<CR>', function(prompt_bufnr)
-            local entry = state.get_selected_entry()
-            local commit = entry.value
-            local file = vim.fn.expand '%'
-
-            actions.close(prompt_bufnr)
-            require 'diffview'
-            -- Ouvre le diff entre le fichier courant et le commit sélectionné
-            vim.cmd('DiffviewOpen ' .. commit .. ' -- ' .. file)
-          end)
-
-          return true
-        end,
-      }
-    end, { desc = '[G]it [V]iew [C]ommit diff for current file' }),
+    -- Raccourci “voir le diff du commit sélectionné pour CE fichier”
+    {
+      '<leader>gi',
+      function()
+        local file = vim.fn.expand '%'
+        Snacks.picker.git_log_file {
+          confirm = function(picker, item)
+            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
+            picker:close()
+            if hash and file ~= '' then
+              vim.cmd('DiffviewOpen ' .. hash .. ' -- ' .. vim.fn.fnameescape(file))
+            end
+          end,
+        }
+      end,
+      desc = '[G]it View Commit d[I]ff for current file',
+    },
   },
 }

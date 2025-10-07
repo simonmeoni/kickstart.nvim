@@ -25,14 +25,12 @@ vim.opt.textwidth = 100
 -- enable persistent undo
 vim.opt.undodir = './undodir'
 vim.opt.undofile = true
+vim.opt.undodir = vim.fn.expand '~/.local/state/nvim/undodir'
 
 -- Enable break indent
 vim.opt.breakindent = true
 vim.opt.wrap = false
 vim.opt.colorcolumn = '100'
-
--- Save undo history
-vim.opt.undofile = true
 
 -- Case-insensitive
 -- searching UNLESS \C or one or more capital letters in the search term
