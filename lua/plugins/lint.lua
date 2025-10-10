@@ -10,6 +10,13 @@ return {
         python = { 'flake8' },
       }
 
+      -- Customize flake8 to use 100 character line length
+      lint.linters.flake8.args = {
+        '--format=%(path)s:%(row)d:%(col)d:%(code)s:%(text)s',
+        '--no-show-source',
+        '--max-line-length=100',
+      }
+
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
       -- lint.linters_by_ft = lint.linters_by_ft or {}

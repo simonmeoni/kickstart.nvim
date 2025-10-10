@@ -60,6 +60,7 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>u', icon = '🎨', group = '[U]I' },
       { '<leader>S', icon = '👻', group = '[S]pectre', mode = { 'n', 'x' } },
       { '<leader>t', icon = '🌓', group = '[T]oggle' },
+      { '<leader>k', icon = '👹', group = 'side[K]ick', mode = { 'n', 'x' } },
       { '<leader>w', icon = '😵', group = '[W]orkspace' },
       { '<leader>x', icon = '😈', group = '[X]Trouble' },
       { '<leader>z', icon = '☯️', group = '[Z]en' },

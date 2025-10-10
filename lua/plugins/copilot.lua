@@ -1,5 +1,8 @@
 return {
+
   'zbirenbaum/copilot.lua',
+  dependencies = { 'copilotlsp-nvim/copilot-lsp' },
+
   event = 'InsertEnter',
   config = function()
     require('copilot').setup {
@@ -17,5 +20,6 @@ return {
       },
       panel = { enabled = false },
     }
+    vim.lsp.enable 'copilot'
   end,
 }

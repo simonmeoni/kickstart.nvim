@@ -1,7 +1,6 @@
 -- Set <space> as the leader key
 --  NOTE: Must happen before plugins are loaded
 --  (otherwise wrong leader will be used)
-
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.g.have_nerd_font = true
@@ -53,6 +52,7 @@ require('lazy').setup {
   require 'plugins/neoscroll',
   require 'plugins/eldritch',
   require 'plugins/github-monochrome',
+  require 'plugins/sidekick',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
