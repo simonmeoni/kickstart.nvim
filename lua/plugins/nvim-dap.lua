@@ -75,6 +75,146 @@ return {
     local last_module_args = ''
     local last_file_args = ''
 
+    -- History storage for debug/run configurations
+    local run_history = {}
+    local max_history = 20 -- Maximum number of history entries
+    local history_file = vim.fn.getcwd() .. '/.nvim/dap_run_history.json'
+
+    -- Function to load history from file
+    local function load_history()
+      local file = io.open(history_file, 'r')
+      if file then
+        local content = file:read('*a')
+        file:close()
+        local ok, decoded = pcall(vim.json.decode, content)
+        if ok and decoded then
+          run_history = decoded
+        end
+      end
+    end
+
+    -- Function to save history to file
+    local function save_history()
+      -- Create .nvim directory if it doesn't exist
+      vim.fn.mkdir(vim.fn.getcwd() .. '/.nvim', 'p')
+      local file = io.open(history_file, 'w')
+      if file then
+        file:write(vim.json.encode(run_history))
+        file:close()
+      end
+    end
+
+    -- Load history on startup
+    load_history()
+
+    -- Function to add entry to history
+    local function add_to_history(entry)
+      -- Check if exact same entry exists
+      for i, existing in ipairs(run_history) do
+        if existing.mode == entry.mode
+          and existing.type == entry.type
+          and existing.target == entry.target
+          and existing.args == entry.args then
+          -- Move existing entry to front
+          table.remove(run_history, i)
+          table.insert(run_history, 1, existing)
+          save_history()
+          return
+        end
+      end
+
+      -- Add new entry at the front
+      table.insert(run_history, 1, entry)
+
+      -- Trim history if too long
+      if #run_history > max_history then
+        table.remove(run_history)
+      end
+
+      -- Save to disk
+      save_history()
+    end
+
+    -- Function to select and run from history
+    local function run_from_history()
+      if #run_history == 0 then
+        vim.notify('No run history available', vim.log.levels.WARN)
+        return
+      end
+
+      local items = {}
+      for i, entry in ipairs(run_history) do
+        local mode_icon = entry.mode == 'DEBUG' and '🐛' or '▶️'
+        local target = entry.type == 'file'
+          and vim.fn.fnamemodify(entry.target, ':t')  -- Just filename
+          or entry.target  -- Module name as-is
+
+        local label = mode_icon .. ' ' .. target
+        if entry.args and entry.args ~= '' then
+          label = label .. ' ' .. entry.args
+        end
+        table.insert(items, label)
+      end
+
+      vim.ui.select(items, {
+        prompt = 'Select configuration to run:',
+        format_item = function(item)
+          return item
+        end,
+      }, function(_, idx)
+        if not idx then return end
+
+        local entry = run_history[idx]
+        if entry.mode == 'DEBUG' then
+          -- Run in debug mode
+          if entry.type == 'file' then
+            dap.run({
+              type = 'python',
+              request = 'launch',
+              name = 'Launch file',
+              program = entry.target,
+              args = entry.args ~= '' and vim.split(entry.args, ' +') or {},
+              pythonPath = function()
+                if vim.env.VIRTUAL_ENV then
+                  return vim.env.VIRTUAL_ENV .. '/bin/python'
+                end
+                return 'python'
+              end,
+              console = 'integratedTerminal',
+            })
+          elseif entry.type == 'module' then
+            dap.run({
+              type = 'python',
+              request = 'launch',
+              name = 'Launch module',
+              module = entry.target,
+              args = entry.args ~= '' and vim.split(entry.args, ' +') or {},
+              pythonPath = function()
+                if vim.env.VIRTUAL_ENV then
+                  return vim.env.VIRTUAL_ENV .. '/bin/python'
+                end
+                return 'python'
+              end,
+              console = 'integratedTerminal',
+            })
+          end
+        elseif entry.mode == 'RUN' then
+          -- Run without debug
+          local python = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or 'python'
+          local cmd
+          if entry.type == 'file' then
+            cmd = python .. ' ' .. entry.target
+          elseif entry.type == 'module' then
+            cmd = python .. ' -m ' .. entry.target
+          end
+          if entry.args and entry.args ~= '' then
+            cmd = cmd .. ' ' .. entry.args
+          end
+          vim.cmd('botright 25split | terminal ' .. cmd)
+        end
+      end)
+    end
+
     dap.configurations.python = {
       -- Fichier actuel avec args mémorisés
       {
@@ -153,11 +293,66 @@ return {
     -- Keymaps DEBUG
     -- <Leader>cc : Lance directement le fichier actuel en debug (demande les args)
     vim.keymap.set('n', '<Leader>cc', function()
-      dap.run(dap.configurations.python[1])
+      local file = vim.fn.expand '%:p'
+      local args = vim.fn.input('Arguments: ', last_file_args)
+      last_file_args = args
+
+      -- Save to history
+      add_to_history({
+        mode = 'DEBUG',
+        type = 'file',
+        target = file,
+        args = args,
+      })
+
+      dap.run({
+        type = 'python',
+        request = 'launch',
+        name = 'Launch file',
+        program = file,
+        args = args ~= '' and vim.split(args, ' +') or {},
+        pythonPath = function()
+          if vim.env.VIRTUAL_ENV then
+            return vim.env.VIRTUAL_ENV .. '/bin/python'
+          end
+          return 'python'
+        end,
+        console = 'integratedTerminal',
+      })
     end, { desc = 'DAP: Launch current file' })
 
-    -- <Leader>cC : Ouvre le menu pour choisir entre file/module en debug
-    vim.keymap.set('n', '<Leader>cC', dap.continue, { desc = 'DAP: Choose config & Continue' })
+    -- <Leader>cC : Debug module avec args
+    vim.keymap.set('n', '<Leader>cC', function()
+      local module = vim.fn.input('Module name: ', last_module)
+      if module ~= '' then
+        last_module = module
+      end
+      local args = vim.fn.input('Arguments: ', last_module_args)
+      last_module_args = args
+
+      -- Save to history
+      add_to_history({
+        mode = 'DEBUG',
+        type = 'module',
+        target = module,
+        args = args,
+      })
+
+      dap.run({
+        type = 'python',
+        request = 'launch',
+        name = 'Launch module',
+        module = module,
+        args = args ~= '' and vim.split(args, ' +') or {},
+        pythonPath = function()
+          if vim.env.VIRTUAL_ENV then
+            return vim.env.VIRTUAL_ENV .. '/bin/python'
+          end
+          return 'python'
+        end,
+        console = 'integratedTerminal',
+      })
+    end, { desc = 'DAP: Launch module' })
 
     vim.keymap.set('n', '<Leader>co', dap.step_over, { desc = 'DAP: Step Over' })
     vim.keymap.set('n', '<Leader>ci', dap.step_into, { desc = 'DAP: Step Into' })
@@ -175,6 +370,14 @@ return {
       local file = vim.fn.expand '%:p'
       local args = vim.fn.input('Arguments: ', last_file_args)
       last_file_args = args
+
+      -- Save to history
+      add_to_history({
+        mode = 'RUN',
+        type = 'file',
+        target = file,
+        args = args,
+      })
 
       local python = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or 'python'
       local cmd = python .. ' ' .. file
@@ -195,6 +398,14 @@ return {
       local args = vim.fn.input('Arguments: ', last_module_args)
       last_module_args = args
 
+      -- Save to history
+      add_to_history({
+        mode = 'RUN',
+        type = 'module',
+        target = module,
+        args = args,
+      })
+
       local python = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or 'python'
       local cmd = python .. ' -m ' .. module
       if args ~= '' then
@@ -204,6 +415,10 @@ return {
       -- Ouvre un terminal nvim en bas (25 lignes)
       vim.cmd('botright 25split | terminal ' .. cmd)
     end, { desc = 'Run Python module in terminal' })
+
+    -- <Leader>ch : Select from run/debug history
+    vim.keymap.set('n', '<Leader>ch', run_from_history, { desc = 'Select from run/debug history' })
+
     -- <Leader>cQ : Stop le processus en cours dans le terminal
     vim.keymap.set('n', '<Leader>cQ', function()
       -- Envoie Ctrl+C au terminal

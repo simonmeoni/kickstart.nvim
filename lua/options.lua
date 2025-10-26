@@ -23,9 +23,8 @@ end)
 vim.opt.textwidth = 100
 
 -- enable persistent undo
-vim.opt.undodir = './undodir'
-vim.opt.undofile = true
 vim.opt.undodir = vim.fn.expand '~/.local/state/nvim/undodir'
+vim.opt.undofile = true
 
 -- Enable break indent
 vim.opt.breakindent = true

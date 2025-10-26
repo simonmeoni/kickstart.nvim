@@ -85,3 +85,34 @@ vim.api.nvim_create_user_command('LunetteToggleRsync', function()
 end, { desc = 'Toggle lunette rsync autocommand' })
 
 lunette.toggle_rsync_autocmd()
+
+vim.api.nvim_create_autocmd('BufWritePost', {
+  pattern = '*/dummy-sidekick/lua/**/*.lua',
+  callback = function()
+    vim.notify('🧪 Running tests...', vim.log.levels.INFO)
+
+    -- Run tests in background, don't block editing
+    vim.fn.jobstart({
+      'nvim',
+      '--headless',
+      '--noplugin',
+      '-u',
+      vim.fn.expand '~/Code/dummy-sidekick/tests/minimal_init.lua',
+      '-c',
+      'PlenaryBustedDirectory ~/Code/dummy-sidekick/tests/',
+    }, {
+      on_exit = function(_, exit_code)
+        if exit_code == 0 then
+          vim.schedule(function()
+            vim.notify('✅ Tests passed!', vim.log.levels.INFO)
+          end)
+        else
+          vim.schedule(function()
+            vim.notify('❌ Tests failed!', vim.log.levels.ERROR)
+          end)
+        end
+      end,
+    })
+  end,
+  desc = 'Auto-run sidekick tests on save',
+})
