@@ -1,73 +1,64 @@
 return {
-  -- Diff/merge UI
   'sindrets/diffview.nvim',
-  dependencies = {
-    'folke/snacks.nvim', -- le picker
-    'nvim-lua/plenary.nvim',
+  dependencies = 'nvim-lua/plenary.nvim',
+  opts = {
+    keymaps = {
+      view = {
+        { 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Close diffview' } },
+      },
+      file_panel = {
+        { 'n', 'q', '<cmd>DiffviewClose<cr>', { desc = 'Close diffview' } },
+      },
+    },
   },
-  config = function()
-    require('diffview').setup()
-  end,
   keys = {
-    -- Vues directes Diffview (inchangé)
-    { '<leader>gd', '<cmd>DiffviewOpen<cr>', desc = '[G]it [D]iff working tree vs HEAD' },
-    { '<leader>gh', '<cmd>DiffviewFileHistory<cr>', desc = '[G]it [H]istory repo commits' },
-    { '<leader>gH', '<cmd>DiffviewFileHistory %<cr>', desc = '[G]it [H]istory current file' },
+    -- Simple diff of current changes vs HEAD
+    { '<leader>gD', '<cmd>DiffviewOpen<cr>', desc = 'Diffview: current changes' },
 
+    -- Compare with branch using Snacks picker
     {
-      '<leader>gc',
+      '<leader>gv',
+      function()
+        Snacks.picker.git_branches {
+          confirm = function(picker, item)
+            picker:close()
+            if item then
+              local branch = item.branch or item.text or item
+              vim.cmd('DiffviewOpen ' .. branch)
+            end
+          end,
+        }
+      end,
+      desc = 'Diffview: compare branch',
+    },
+
+    -- Compare with commit using Snacks picker
+    {
+      '<leader>gV',
       function()
         Snacks.picker.git_log {
           confirm = function(picker, item)
-            -- Champs possibles selon la source (soyons robustes)
-            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
             picker:close()
-            if hash then
-              vim.cmd('DiffviewOpen ' .. hash)
-            else
-              vim.notify('Impossible de récupérer le hash du commit', vim.log.levels.WARN)
+            if item then
+              local hash = item.hash or item.commit or item.text
+              if hash then
+                vim.cmd('DiffviewOpen ' .. hash)
+              end
             end
           end,
         }
       end,
-      desc = '[G]it [C]ommits → Diffview',
+      desc = 'Diffview: compare commit',
     },
 
-    -- Commits du fichier courant → Diffview (equiv. git_bcommits)
-    {
-      '<leader>gC',
-      function()
-        local file = vim.fn.expand '%'
-        Snacks.picker.git_log_file {
-          confirm = function(picker, item)
-            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
-            picker:close()
-            if hash and file ~= '' then
-              -- diff du commit (range ^!) restreint au fichier courant
-              vim.cmd('DiffviewOpen ' .. hash .. '^! -- ' .. vim.fn.fnameescape(file))
-            end
-          end,
-        }
-      end,
-      desc = '[G]it file [C]ommits → Diffview',
-    },
+    -- Merge tool for conflicts
+    { '<leader>gm', '<cmd>DiffviewOpen -m<cr>', desc = 'Diffview: merge conflicts' },
 
-    -- Raccourci “voir le diff du commit sélectionné pour CE fichier”
-    {
-      '<leader>gi',
-      function()
-        local file = vim.fn.expand '%'
-        Snacks.picker.git_log_file {
-          confirm = function(picker, item)
-            local hash = item.hash or (item.commit and (item.commit.hash or item.commit.oid)) or item.value or item.text
-            picker:close()
-            if hash and file ~= '' then
-              vim.cmd('DiffviewOpen ' .. hash .. ' -- ' .. vim.fn.fnameescape(file))
-            end
-          end,
-        }
-      end,
-      desc = '[G]it View Commit d[I]ff for current file',
-    },
+    -- File history
+    { '<leader>gh', '<cmd>DiffviewFileHistory<cr>', desc = 'Diffview: repo history' },
+    { '<leader>gH', '<cmd>DiffviewFileHistory %<cr>', desc = 'Diffview: file history' },
+
+    -- Close diffview
+    { '<leader>gq', '<cmd>DiffviewClose<cr>', desc = 'Diffview: close' },
   },
 }
