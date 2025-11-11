@@ -6,6 +6,7 @@ return {
     vim.g.vimtex_view_skim_sync = 1
     vim.g.vimtex_view_skim_activate = 1
     vim.g.vimtex_quickfix_mode = 0
+    vim.g.vimtex_syntax_enabled = 0 -- Disable VimTeX syntax, let treesitter handle it
     vim.g.vimtex_log_file_exts = {
       'log',
       'aux',

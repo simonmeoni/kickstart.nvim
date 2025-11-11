@@ -1,10 +1,13 @@
 return { -- Highlight, edit, and navigate code
   'nvim-treesitter/nvim-treesitter',
   build = ':TSUpdate',
+  dependencies = {
+    'nvim-treesitter/nvim-treesitter-refactor',
+  },
   main = 'nvim-treesitter.configs', -- Sets main module to use for opts
   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
   opts = {
-    ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+    ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'python', 'latex' },
     -- Autoinstall languages that are not installed
     auto_install = true,
     highlight = {
@@ -15,37 +18,17 @@ return { -- Highlight, edit, and navigate code
       additional_vim_regex_highlighting = { 'ruby' },
     },
     indent = { enable = true, disable = { 'ruby' } },
-    {
-      'nvim-treesitter/nvim-treesitter',
-      build = ':TSUpdate',
-      dependencies = {
-        'nvim-treesitter/nvim-treesitter-refactor',
+    refactor = {
+      highlight_definitions = { enable = true },
+      smart_rename = {
+        enable = true,
+        keymaps = {
+          smart_rename = 'grr',
+        },
       },
-      config = function()
-        require('nvim-treesitter.configs').setup {
-          highlight = { enable = true },
-          indent = { enable = true },
-          refactor = {
-            highlight_definitions = { enable = true },
-            smart_rename = {
-              enable = true,
-              keymaps = {
-                smart_rename = 'grr', -- tu peux changer
-              },
-            },
-            navigation = {
-              enable = true,
-              keymaps = {
-                goto_definition_lsp_fallback = 'gnd',
-                list_definitions = 'gnD',
-                list_definitions_toc = 'gO',
-                goto_next_usage = '<a-*>',
-                goto_previous_usage = '<a-#>',
-              },
-            },
-          },
-        }
-      end,
+      navigation = {
+        enable = false, -- Disabled due to bugs, use LSP navigation instead (gd, gr, etc.)
+      },
     },
   },
   -- There are additional nvim-treesitter modules that you can use to interact

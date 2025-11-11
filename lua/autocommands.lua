@@ -51,7 +51,7 @@ function lunette.toggle_rsync_autocmd()
   local matched_source, base_dest = lunette.find_dest_dir(cwd)
 
   if matched_source then
-    print('Lunette autocommand is toggled for: ' .. matched_source)
+    vim.notify('Lunette autocommand enabled for: ' .. matched_source, vim.log.levels.INFO)
     lunette.rsync_autocmd_id = vim.api.nvim_create_autocmd('BufWritePost', {
       pattern = '*',
       callback = function(ctx)
@@ -75,9 +75,8 @@ function lunette.toggle_rsync_autocmd()
         }
       end,
     })
-  else
-    print 'Lunette autocommand can only be toggled in a registered source directory'
   end
+  -- Silent when not in a registered directory (no annoying message on every startup)
 end
 
 vim.api.nvim_create_user_command('LunetteToggleRsync', function()

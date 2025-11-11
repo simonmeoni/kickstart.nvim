@@ -1,7 +1,6 @@
 return {
   'mfussenegger/nvim-dap',
   dependencies = {
-    'rcarriga/nvim-dap-ui',
     'nvim-neotest/nvim-nio',
     'theHamsta/nvim-dap-virtual-text',
     'williamboman/mason.nvim',
@@ -9,59 +8,12 @@ return {
   },
   config = function()
     local dap = require 'dap'
-    local dapui = require 'dapui'
     local dapvt = require 'nvim-dap-virtual-text'
 
     require('mason-nvim-dap').setup {
       automatic_installation = true,
       handlers = {},
     }
-
-    -- Setup plugins
-    dapvt.setup()
-    dapui.setup {
-      icons = { expanded = '', collapsed = '', current_frame = '' },
-      layouts = {
-        {
-          elements = {
-            { id = 'scopes', size = 0.4 },
-            { id = 'breakpoints', size = 0.2 },
-            { id = 'stacks', size = 0.2 },
-            { id = 'watches', size = 0.2 },
-          },
-          size = 40,
-          position = 'left',
-        },
-        {
-          elements = {
-            { id = 'repl', size = 0.5 },
-            { id = 'console', size = 0.5 },
-          },
-          size = 0.4,
-          position = 'bottom',
-        },
-      },
-      controls = {
-        enabled = false,
-      },
-      floating = {
-        border = 'rounded',
-        mappings = {
-          close = { 'q', '<Esc>' },
-        },
-      },
-    }
-
-    -- Auto open/close DAP UI
-    dap.listeners.after.event_initialized['dapui_config'] = function()
-      dapui.open()
-    end
-    dap.listeners.before.event_terminated['dapui_config'] = function()
-      dapui.close()
-    end
-    dap.listeners.before.event_exited['dapui_config'] = function()
-      dapui.close()
-    end
 
     -- Adapter Python
     dap.adapters.python = {
@@ -84,7 +36,7 @@ return {
     local function load_history()
       local file = io.open(history_file, 'r')
       if file then
-        local content = file:read('*a')
+        local content = file:read '*a'
         file:close()
         local ok, decoded = pcall(vim.json.decode, content)
         if ok and decoded then
@@ -111,10 +63,7 @@ return {
     local function add_to_history(entry)
       -- Check if exact same entry exists
       for i, existing in ipairs(run_history) do
-        if existing.mode == entry.mode
-          and existing.type == entry.type
-          and existing.target == entry.target
-          and existing.args == entry.args then
+        if existing.mode == entry.mode and existing.type == entry.type and existing.target == entry.target and existing.args == entry.args then
           -- Move existing entry to front
           table.remove(run_history, i)
           table.insert(run_history, 1, existing)
@@ -145,9 +94,8 @@ return {
       local items = {}
       for i, entry in ipairs(run_history) do
         local mode_icon = entry.mode == 'DEBUG' and '🐛' or '▶️'
-        local target = entry.type == 'file'
-          and vim.fn.fnamemodify(entry.target, ':t')  -- Just filename
-          or entry.target  -- Module name as-is
+        local target = entry.type == 'file' and vim.fn.fnamemodify(entry.target, ':t') -- Just filename
+          or entry.target -- Module name as-is
 
         local label = mode_icon .. ' ' .. target
         if entry.args and entry.args ~= '' then
@@ -162,13 +110,15 @@ return {
           return item
         end,
       }, function(_, idx)
-        if not idx then return end
+        if not idx then
+          return
+        end
 
         local entry = run_history[idx]
         if entry.mode == 'DEBUG' then
           -- Run in debug mode
           if entry.type == 'file' then
-            dap.run({
+            dap.run {
               type = 'python',
               request = 'launch',
               name = 'Launch file',
@@ -181,9 +131,9 @@ return {
                 return 'python'
               end,
               console = 'integratedTerminal',
-            })
+            }
           elseif entry.type == 'module' then
-            dap.run({
+            dap.run {
               type = 'python',
               request = 'launch',
               name = 'Launch module',
@@ -196,7 +146,7 @@ return {
                 return 'python'
               end,
               console = 'integratedTerminal',
-            })
+            }
           end
         elseif entry.mode == 'RUN' then
           -- Run without debug
@@ -298,14 +248,14 @@ return {
       last_file_args = args
 
       -- Save to history
-      add_to_history({
+      add_to_history {
         mode = 'DEBUG',
         type = 'file',
         target = file,
         args = args,
-      })
+      }
 
-      dap.run({
+      dap.run {
         type = 'python',
         request = 'launch',
         name = 'Launch file',
@@ -318,7 +268,7 @@ return {
           return 'python'
         end,
         console = 'integratedTerminal',
-      })
+      }
     end, { desc = 'DAP: Launch current file' })
 
     -- <Leader>cC : Debug module avec args
@@ -331,14 +281,14 @@ return {
       last_module_args = args
 
       -- Save to history
-      add_to_history({
+      add_to_history {
         mode = 'DEBUG',
         type = 'module',
         target = module,
         args = args,
-      })
+      }
 
-      dap.run({
+      dap.run {
         type = 'python',
         request = 'launch',
         name = 'Launch module',
@@ -351,7 +301,7 @@ return {
           return 'python'
         end,
         console = 'integratedTerminal',
-      })
+      }
     end, { desc = 'DAP: Launch module' })
 
     vim.keymap.set('n', '<Leader>co', dap.step_over, { desc = 'DAP: Step Over' })
@@ -372,12 +322,12 @@ return {
       last_file_args = args
 
       -- Save to history
-      add_to_history({
+      add_to_history {
         mode = 'RUN',
         type = 'file',
         target = file,
         args = args,
-      })
+      }
 
       local python = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or 'python'
       local cmd = python .. ' ' .. file
@@ -399,12 +349,12 @@ return {
       last_module_args = args
 
       -- Save to history
-      add_to_history({
+      add_to_history {
         mode = 'RUN',
         type = 'module',
         target = module,
         args = args,
-      })
+      }
 
       local python = vim.env.VIRTUAL_ENV and (vim.env.VIRTUAL_ENV .. '/bin/python') or 'python'
       local cmd = python .. ' -m ' .. module

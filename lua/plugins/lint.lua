@@ -6,8 +6,8 @@ return {
     config = function()
       local lint = require 'lint'
       lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-        python = { 'flake8' },
+        markdown = { 'markdownlint-cli2' },
+        python = { 'ruff' },
       }
 
       -- Customize flake8 to use 100 character line length
