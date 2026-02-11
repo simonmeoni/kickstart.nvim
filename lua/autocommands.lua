@@ -12,6 +12,12 @@ vim.api.nvim_create_autocmd('textyankpost', {
   end,
 })
 
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.fn.setenv('IS_NVIM', 'true')
+  end,
+})
+
 vim.api.nvim_create_autocmd('FileType', {
   pattern = { 'tex', 'bib' },
   callback = function()

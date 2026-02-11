@@ -37,8 +37,7 @@ return {
         -- Execute a code action, usually your cursor needs to be on top of an error
         -- or a suggestion from your LSP for this to activate.
         map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
-        map('<leader>cn', vim.diagnostic.goto_next, '[C]ode [N]ext Error', { 'n', 'x' })
-        map('<leader>cp', vim.diagnostic.goto_prev, '[C]ode [P]revious Error', { 'n', 'x' })
+        -- NOTE: <leader>cn and <leader>cp are now handled by trouble.nvim (see lua/plugins/trouble.lua)
 
         map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 

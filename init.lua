@@ -52,6 +52,8 @@ require('lazy').setup {
   require 'plugins/eldritch',
   require 'plugins/github-monochrome',
   require 'plugins/sidekick',
+  require 'plugins/harpoon',
+  require 'plugins/trouble',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

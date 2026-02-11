@@ -486,6 +486,16 @@ return {
         end
         vim.print = _G.dd -- Override print to use snacks for `:=` command
 
+        -- Setup trouble.nvim integration for snacks picker
+        local ok, trouble_snacks = pcall(require, 'trouble.sources.snacks')
+        if ok then
+          Snacks.config.picker.actions = vim.tbl_extend('force', Snacks.config.picker.actions or {}, {
+            trouble_open = trouble_snacks.actions.trouble_open,
+            trouble_open_selected = trouble_snacks.actions.trouble_open_selected,
+            trouble_open_all = trouble_snacks.actions.trouble_open_all,
+          })
+        end
+
         -- Create some toggle mappings
         Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>us'
         Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>uw'

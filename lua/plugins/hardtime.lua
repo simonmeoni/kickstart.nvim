@@ -3,7 +3,7 @@ return {
   lazy = false,
   dependencies = { 'MunifTanjim/nui.nvim' },
   opts = {
-    max_count = 4, -- Allow 4 repetitions before warning (default is 2)
+    max_count = 20, -- Allow 4 repetitions before warning (default is 2)
     disable_mouse = false, -- Don't disable mouse
     hint = true, -- Show hints instead of just blocking
     notification = true, -- Show notifications

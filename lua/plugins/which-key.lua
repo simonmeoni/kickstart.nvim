@@ -42,7 +42,7 @@ return { -- Useful plugin to show you pending keybinds.
       },
     },
     spec = {
-      { '<leader>a', icon = '🪉', group = 'h[A]rpoon', mode = { 'n', 'v' } },
+      { '<leader>a', icon = '🔱', group = 'h[A]rpoon', mode = { 'n', 'v' } },
       { '<leader>c', icon = '🧬', group = '[C]ode', mode = { 'n', 'x' } },
       { '<leader>d', icon = '🕊️', group = '[D]ocument' },
       { '<leader>e', icon = '🦊', group = '[E]xplorer' },
@@ -60,6 +60,7 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>u', icon = '🎨', group = '[U]I' },
       { '<leader>S', icon = '👻', group = '[S]pectre', mode = { 'n', 'x' } },
       { '<leader>t', icon = '🌓', group = '[T]oggle' },
+      { '<leader>x', icon = '🔧', group = 'Trouble' },
       { '<leader>k', icon = '👹', group = 'side[K]ick', mode = { 'n', 'x' } },
       { '<leader>w', icon = '😵', group = '[W]orkspace' },
       { '<leader>z', icon = '☯️', group = '[Z]en' },
